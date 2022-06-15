@@ -1,0 +1,71 @@
+<%- include("partials/header") %>
+<div class="quiz">
+    <div class="title">Today's quiz</div>
+    <div class="content">
+        <form action="/quiz" method="post">
+            <input type="hidden" name="quizName" value="<%= value %>">
+            <div class="question-one question">
+                <%- question1.replace("<inp>", '<input type="text" name="questiononeblank" class="blank" autocomplete="off">') %>
+            </div>
+            <div class="question-two question">
+                <%- question2.replace("<inp>", '<input type="text" name="questiontwoblank" class="blank" autocomplete="off">') %>
+            </div>
+            <div class="question-three question">
+                <%- question3.replace("<inp>", '<input type="text" name="questionthreeblank" class="blank" autocomplete="off">') %>
+            </div>
+            <div class="question-four question">
+                <%- question4.replace("<inp>", '<input type="text" name="questionfourblank" class="blank" autocomplete="off">') %>
+            </div>
+            <div class="question-four question">
+                <%- question5.replace("<inp>", '<input type="text" name="questionfiveblank" class="blank" autocomplete="off">') %>
+            </div>
+            <div class="submit-btn-container">
+                <button id="submit-btn" type="submit">Submit and end test</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementsByTagName("body")[0].style.visibility = "hidden";
+    if(localStorage.getItem("userloggedin") != "yes") {
+        alert("Please login to give a quiz.");
+        window.open("/login", "_parent");
+    }
+    else {
+        document.getElementsByTagName("body")[0].style.visibility = "visible";
+    }
+</script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { doc, getDoc, getFirestore} from "https://www.gstatic.com/firebasejs/9.8.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBz1kOpHGbECrAVDQAQN217ycfbM0VjC20",
+        authDomain: "english-quizzz.firebaseapp.com",
+        projectId: "english-quizzz",
+        storageBucket: "english-quizzz.appspot.com",
+        messagingSenderId: "531636974687",
+        appId: "1:531636974687:web:987866ab854ddf5f9597ea",
+        measurementId: "G-0GCR06880E",
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore();
+
+    window.onload = async () => {
+        if(localStorage.getItem("userloggedin") == "yes") {
+            var docRef = doc(db, "UsersList", localStorage.getItem("email"));
+            const docSnap = await getDoc(docRef);
+            console.log(docSnap);
+
+            if(!docSnap.exists()) {
+                alert("You are a hacker a fake user!!");
+                localStorage.clear();
+                window.open("/", "_parent");
+            }
+        }
+    };
+    
+</script>
+<%- include("partials/footer") %>

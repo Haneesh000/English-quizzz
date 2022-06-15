@@ -1,0 +1,151 @@
+<%- include("partials/header") %>
+<div class="developer-container">
+    <div class="title">Developer related queries</div>
+    <div class="content">
+        <div class="read-about-me">
+            If you want to read about me <a href="/about">Click here</a> or go to the nav bar and click about me.
+        </div>
+        Hello I don't know why you came to this page but there are some instructions to run the website. 
+        <br> <br>
+        <div class="sections-note">You can click on any section below to reach a section about that specific topic.</div>
+        <div class="sections">
+            <div class="title">Sections:-</div>
+            <ul>
+                <li><a href="#run-site">How to run site?</a></li>
+                <li><a href="#contact-developer">Contact Developer.</a></li>
+                <li><a href="#contact-developer">Suggest a new feature.</a></li>
+                <li><a href="#bugs">Report bug.</a></li>
+            </ul>
+        </div>
+        <div id="run-site">
+            <div class="title">How to run the web app?</div>
+            <div class="run-site-content">
+                Hey there users! This site is user-freindly but though it is good to create a page about how to run the site.
+                <br>
+                So first of all click on login in top right corner of the paage and login to your account. If you don't have an account click on signup in the login page and create an account. Then it will take you to home page from there click on get started or quiz button in the navigation menu and give your quiz. An important alert if you try to hack our site we will ban your account forever!!!
+            </div>
+        </div>
+        <div id="contact-developer">
+            <div class="title">Contact Developer</div>
+            <div class="contactForm">
+                <input type="text" id="title" placeholder="Title" autocomplete="off"> <br><br>
+                <textarea id="content" cols="30" rows="8" placeholder="Content"></textarea> <br><br>
+                <button id="submitQuery">Submit Query</button>
+            </div>
+        </div>
+        <div id="bugs">
+            <div class="title">Report a bug</div>
+            <div class="bugForm">
+                <input type="text" id="bugTitle" placeholder="Title" autocomplete="off"> <br><br>
+                <textarea id="bugContent" cols="30" rows="8" placeholder="Content"></textarea> <br><br>
+                <button id="bugSubmitQuery">Submit Query</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { doc, getDoc, setDoc, getFirestore } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBz1kOpHGbECrAVDQAQN217ycfbM0VjC20",
+        authDomain: "english-quizzz.firebaseapp.com",
+        projectId: "english-quizzz",
+        storageBucket: "english-quizzz.appspot.com",
+        messagingSenderId: "531636974687",
+        appId: "1:531636974687:web:987866ab854ddf5f9597ea",
+        measurementId: "G-0GCR06880E",
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore();
+
+    window.onload = async () => {
+        if(localStorage.getItem("userloggedin") == "yes") {
+            var docRef = doc(db, "UsersList", localStorage.getItem("email"));
+            const docSnap = await getDoc(docRef);
+
+            if(!docSnap.exists()) {
+                alert("You are a hacker a fake user!!");
+                localStorage.clear();
+                window.open("/", "_parent");
+            }
+        }
+    };
+
+    async function contactDeveloper(title, content, email, fullName) {
+        if(localStorage.getItem("userloggedin") == "yes") {
+            if(document.getElementById("title").value == "") {
+                alert("Please give a valid title");
+            } else if (document.getElementById("content").value == "") {
+                alert("Please give a valid content.")
+            } else {
+                const docRef1 = doc(db, "ContactDeveloper", title);
+                const docSnapShot = await setDoc(
+                    docRef1, {
+                        title: title,
+                        content: content,
+                        email: email,
+                        fullName: fullName
+                    }
+                )
+                .then(() => {
+                    alert("Thank you for contacting me. I will send a response back to you at your email.");
+                })
+            }
+        } else {
+            alert("Please login to contact developer");
+        }
+    }
+
+    document.getElementById("submitQuery").addEventListener("click", () => {
+        var titlebox = document.getElementById("title");
+        var contentbox = document.getElementById("content");
+        var email = localStorage.getItem("email");
+        var fullName = localStorage.getItem("firstName")+" "+localStorage.getItem("lastName");
+        contactDeveloper(titlebox.value, contentbox.value, email, fullName)
+        .then(() => {
+            titlebox.value = "";
+            contentbox.value = "";
+        });
+    });
+
+    async function reportBug(title, content, email, fullName) {
+        if(localStorage.getItem("userloggedin") == "yes") {
+            if(document.getElementById("bugTitle").value == "") {
+                alert("Please give a valid title");
+            } else if (document.getElementById("bugContent").value == "") {
+                alert("Please give a valid content.")
+            } else {
+                const docRef2 = doc(db, "ReportBug", title);
+                const docSnapShot2 = await setDoc(
+                    docRef2, {
+                        title: title,
+                        content: content,
+                        email: email,
+                        fullName: fullName
+                    }
+                )
+                .then(() => {
+                    alert("Thank you for reporting a bug. I will send a response back to you at your email.");
+                })
+            }
+        } else {
+            alert("Please login to contact developer");
+        }
+    }
+
+    document.getElementById("bugSubmitQuery").addEventListener("click", () => {
+        var titlebox = document.getElementById("bugTitle");
+        var contentbox = document.getElementById("bugContent");
+        var email = localStorage.getItem("email");
+        var fullName = localStorage.getItem("firstName")+" "+localStorage.getItem("lastName");
+        reportBug(titlebox.value, contentbox.value, email, fullName)
+        .then(() => {
+            titlebox.value = "";
+            contentbox.value = "";
+        });
+    });
+</script>
+<%- include("partials/footer") %>

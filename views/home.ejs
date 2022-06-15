@@ -1,0 +1,68 @@
+<%- include("partials/header") %>
+<div class="quizImageContainer">
+    <img src="Images/quiz-logo.jpg" class="quiz-img" alt="Quiz Logo" draggable="false">
+</div>
+<div class="welcome">
+    Hello! Welcome to english quizes website.
+</div>
+<div class="content">
+    You're gonna get a lot of english quizzes for participation and for practice. If you need more click on Quizes history to attempt past quizzes.
+    <br>
+    This website has been visited <span id="count">0</span> times.
+</div>
+<div class="features">
+    <div class="title">Features of English Quizes website:-</div>
+    <div class="content">
+        <ul>
+            <li>Online:- Can be accessed from Mobile, Laptop, Desktop or Tablet.</li>
+            <li>OS:- No interruptions because of your Operating Systems.</li>
+            <li>Free:- Free of cost for all the people.</li>
+            <li>Easy to use:- It is a really user-friendly application. Any new user can use it quite well.</li>
+            <li>Secured:- Even a web developer can't access this page remotely or find the answers to the questions.</li>
+        </ul>
+    </div>
+</div>
+<center><a><div id="getStarted">Get Started</div></a></center>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { doc, getDoc, getFirestore} from "https://www.gstatic.com/firebasejs/9.8.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBz1kOpHGbECrAVDQAQN217ycfbM0VjC20",
+        authDomain: "english-quizzz.firebaseapp.com",
+        projectId: "english-quizzz",
+        storageBucket: "english-quizzz.appspot.com",
+        messagingSenderId: "531636974687",
+        appId: "1:531636974687:web:987866ab854ddf5f9597ea",
+        measurementId: "G-0GCR06880E",
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore();
+
+    window.onload = async () => {
+        fetch("https://api.countapi.xyz/update/haneesh/englishquizsite?amount=1")
+        .then((res) => res.json())
+        .then((res) => {
+            document.getElementById("count").innerHTML = res.value;
+        });
+
+        if(localStorage.getItem("userloggedin") == "yes") {
+            var docRef = doc(db, "UsersList", localStorage.getItem("email"));
+            const docSnap = await getDoc(docRef);
+            console.log(docSnap);
+
+            if(!docSnap.exists()) {
+                alert("You are a hacker a fake user!!");
+                localStorage.clear();
+                window.open("/", "_parent");
+            } else {
+                document.querySelectorAll("a")[7].setAttribute("href", "/quiz");
+            }
+        } else {
+            document.querySelectorAll("a")[8].setAttribute("href", "/login");
+        }
+    };
+</script>
+<%- include("partials/footer") %>

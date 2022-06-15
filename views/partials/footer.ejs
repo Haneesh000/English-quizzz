@@ -1,0 +1,46 @@
+</div>
+<footer>
+    <div class="footer-container">
+        <p class="footer-content">
+            Copyright &copy; <a href="https://www.haneesh.in">Haneesh</a> <br><br>
+            This site and content belongs to Haneesh
+        </p>
+    </div>
+</footer>
+<script>
+    document.onkeydown = (e) => {
+        if(e.keyCode == 123) {
+            alert("Developer options disabled for security purposes");
+            return false;
+        }
+        
+        if(e.ctrlKey && e.shiftKey && e.keyCode == "I".charCodeAt(0)) {
+            alert("Developer options disabled for security purposes");
+            return false;
+        }
+
+        if(e.ctrlKey && e.shiftKey && e.keyCode == "J".charCodeAt(0)) {
+            alert("Developer options disabled for security purposes");
+            return false;
+        }
+
+        if(e.ctrlKey && e.shiftKey && e.keyCode == "U".charCodeAt(0)) {
+            alert("Developer options disabled for security purposes");
+            return false;
+        }
+
+        if(e.ctrlKey && e.keyCode == "U".charCodeAt(0)) {
+            alert("View page source disabled for security purposes");
+            return false;
+        }
+    }
+
+    document.oncontextmenu = () => {
+        alert("Right click disabled for security purposes");
+        return false;
+    }
+</script>
+<script src="/JS/index.min.js"></script>
+<script src="/JS/responsive.min.js"></script>
+</body>
+</html>

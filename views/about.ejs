@@ -1,0 +1,41 @@
+<%- include("partials/header") %>
+<div class="about-container">
+    <div class="title about">About Me</div>
+    <p class="content">
+        I am Haneesh. I am a programmer and a web designer. I love programming. I know programming languages such as Python, HTML, CSS, JavaScript, Java and C. I also know some backend frameworks like NodeJS and Google FireBase.
+        To read more about me <a href="https://www.haneesh.in/">Click here</a>.
+    </p>
+</div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { doc, getDoc, getFirestore} from "https://www.gstatic.com/firebasejs/9.8.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBz1kOpHGbECrAVDQAQN217ycfbM0VjC20",
+        authDomain: "english-quizzz.firebaseapp.com",
+        projectId: "english-quizzz",
+        storageBucket: "english-quizzz.appspot.com",
+        messagingSenderId: "531636974687",
+        appId: "1:531636974687:web:987866ab854ddf5f9597ea",
+        measurementId: "G-0GCR06880E",
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore();
+
+    window.onload = async () => {
+        if(localStorage.getItem("userloggedin") == "yes") {
+            var docRef = doc(db, "UsersList", localStorage.getItem("email"));
+            const docSnap = await getDoc(docRef);
+            console.log(docSnap);
+
+            if(!docSnap.exists()) {
+                alert("You are a hacker a fake user!!");
+                localStorage.clear();
+                window.open("/", "_parent");
+            }
+        }
+    };
+</script>
+<%- include("partials/footer") %>

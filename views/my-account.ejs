@@ -1,0 +1,33 @@
+<%- include("partials/header") %>
+<div class="title">
+    My Account
+</div>
+<div class="content">
+    <div class="title">Hi, <span id="name"></span></div>
+    <div class="first-name acc-con">
+        <span class="sub-head">First Name:- </span>
+        <span id="fname-con"></span>
+    </div>
+    <div class="last-name acc-con">
+        <span class="sub-head">Last Name:- </span>
+        <span id="lname-con"></span>
+    </div>
+    <div class="email acc-con">
+        <span class="sub-head">Email-id:- </span>
+        <span id="email-con"></span>
+    </div>
+</div>
+<div id="updatebtn">Update account details</div>
+<button id="logoutbtn">Logout</button>
+<button id="delaccbtn">Delete my account</button>
+<script src="/JS/my-account.min.js" type="module"></script>
+<script>
+    document.getElementById("updatebtn").addEventListener("click", () => {
+        window.open("/my-account/update", "_parent");
+    });
+    
+    window.onload = () => {
+        document.getElementById("name").innerHTML = localStorage.getItem("firstName");
+    };
+</script>
+<%- include("partials/footer") %>

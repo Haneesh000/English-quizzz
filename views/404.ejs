@@ -1,0 +1,27 @@
+<%- include("partials/header") %>
+<div class="errorImgContainer">
+    <img src="/Images/404.png" class="errorImg" alt="404" draggable="false">
+</div>
+<div class="errorTitle">Page not found</div>
+<div class="errorContent">
+    Sorry, but the requested URL <span id="path"></span> was not found. <br><br>
+    Please got back or wait <span id="count">30</span> seconds to automatically redirect.
+</div>
+<script>
+    window.onload = () => {
+        document.getElementById("path").innerHTML = window.location.pathname;
+    }
+
+    let seconds = 30;
+
+    function count() {
+        seconds--;
+        if(seconds == 0) {
+            window.history.back();
+        }
+        document.getElementById("count").innerHTML = seconds;
+    }
+
+    setInterval(count, 1000)
+</script>
+<%- include("partials/footer") %>

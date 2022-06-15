@@ -1,0 +1,111 @@
+<%- include("partials/header") %>
+<center>
+    <h2 id="updateTitle">Update Your Account</h2>
+    <input type="text" id="firstnameBox" placeholder="First Name" class="form-inp"> <br>
+    <input type="text" id="lastnameBox" placeholder="Last Name" class="form-inp"> <br>
+    <button id="updateBtn">Update</button>
+</center>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { doc, setDoc, getDoc, deleteDoc, getFirestore } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBz1kOpHGbECrAVDQAQN217ycfbM0VjC20",
+        authDomain: "english-quizzz.firebaseapp.com",
+        projectId: "english-quizzz",
+        storageBucket: "english-quizzz.appspot.com",
+        messagingSenderId: "531636974687",
+        appId: "1:531636974687:web:987866ab854ddf5f9597ea",
+        measurementId: "G-0GCR06880E",
+    };
+
+    const app = initializeApp(firebaseConfig);
+
+    const db = getFirestore();
+
+    let firstnameBox = document.getElementById("firstnameBox");
+    let lastnameBox = document.getElementById("lastnameBox");
+
+    let docSnap;
+
+    window.onload = async () => {
+        if(localStorage.getItem("userloggedin") == "yes") {
+            var docRef = doc(db, "UsersList", localStorage.getItem("email"));
+            docSnap = await getDoc(docRef);
+            console.log(docSnap);
+
+            if(!docSnap.exists()) {
+                alert("You are a hacker a fake user!!");
+                localStorage.clear();
+                window.open("/", "_parent");
+            } else if(docSnap.exists()) {
+                firstnameBox.setAttribute("value", docSnap.data().UserFirstName);
+                lastnameBox.setAttribute("value", docSnap.data().UserLastName);
+            }
+        } else if(localStorage.getItem("userloggedin") != "yes") {
+            alert("Please login!");
+            window.open("/login", "_parent");
+        }
+    };
+
+    document.getElementById("updateBtn").addEventListener("click", async () => {
+        var inputs = document.querySelectorAll("input");
+        let consOk;
+        inputs.forEach((element) => {
+            if(element.value != null || element.value != undefined || element.value != "") {
+                consOk = true;
+            } else {
+                consOk = false;
+            }
+        });
+
+        if(consOk == true) {
+            if(localStorage.getItem("email") != docSnap.data().UserEmail) {
+                var docRef = doc(db, "UsersList", docSnap.data().UserEmail);
+
+                const deleteRef = await deleteDoc(docRef);
+
+                docRef = doc(db, "UsersList", localStorage.getItem("email"));
+    
+                const setRef = await setDoc(
+                    docRef, {
+                        UserEmail: docSnap.data().UserEmail,
+                        UserFirstName: firstnameBox.value,
+                        UserLastName: lastnameBox.value,
+                        UserFullName: firstnameBox.value+" "+lastnameBox.value,
+                        UserPassword: docSnap.data().UserPassword
+                    }
+                )
+                .then(() => {
+                    alert("Successfully updated");
+                    window.open("/my-account", "_parent");
+                })
+                .catch((error) => {
+                    alert("Error: "+error)
+                });
+            } else {
+                var docRef = doc(db, "UsersList", docSnap.data().UserEmail);
+    
+                await setDoc(
+                    docRef, {
+                        UserEmail: docSnap.data().UserEmail,
+                        UserFirstName: firstnameBox.value,
+                        UserLastName: lastnameBox.value,
+                        UserFullName: firstnameBox.value+" "+lastnameBox.value,
+                        UserPassword: docSnap.data().UserPassword
+                    }
+                )
+                .then(() => {
+                    alert("Successfully updated");
+                    window.open("/my-account", "_parent");
+                })
+                .catch((error) => {
+                    alert("Error: "+error)
+                });
+            }
+        } else {
+            alert("Please make sure all the fields are filled")
+        }
+    });
+</script>
+<%- include("partials/footer") %>
