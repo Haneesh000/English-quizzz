@@ -1,3 +1,112 @@
 <%- include("partials/header") %>
+<div class="deleteUser">
+    <div class="title">Delete a User:- </div>
+    <div class="content" id="form">
+        <input type="email" class="form-inp" placeholder="Email" id="emailbox"> <br>
+        <button id="delaccbtn">Delete</button>
+    </div>
+</div>
+<div class="listOfUsers">
+    <div class="title">List of Users:- </div>
+    <div class="content" id="usersListContainer"></div>
+</div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-analytics.js";
+    import { collection, getDocs, deleteDoc, getFirestore, doc } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBz1kOpHGbECrAVDQAQN217ycfbM0VjC20",
+        authDomain: "english-quizzz.firebaseapp.com",
+        projectId: "english-quizzz",
+        storageBucket: "english-quizzz.appspot.com",
+        messagingSenderId: "531636974687",
+        appId: "1:531636974687:web:987866ab854ddf5f9597ea",
+        measurementId: "G-0GCR06880E"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    let usersListContainer = document.getElementById("usersListContainer");
+
+    function addItem(name, email, parent) {
+        var box = document.createElement("div");
+        box.classList.add("box");
+
+        var nameContainer = document.createElement("span");
+        nameContainer.classList.add("userName");
+
+        var nameTitle = document.createElement("span");
+        nameTitle.innerHTML = "Name: ";
+        nameTitle.classList.add("title");
+
+        var nameContent = document.createElement("span");
+        nameContent.innerHTML = name;
+        nameContent.classList.add("userNameContent")
+
+        nameContainer.appendChild(nameTitle);
+        nameContainer.appendChild(nameContent);
+
+        var emailContainer = document.createElement("span");
+        emailContainer.classList.add("userEmail");
+
+        var emailTitle = document.createElement("span");
+        emailTitle.innerHTML = "Email-id: ";
+        emailTitle.classList.add("title");
+
+        var emailContent = document.createElement("span");
+        emailContent.innerHTML = email;
+        emailContent.classList.add("userEmailContent")
+
+        emailContainer.appendChild(emailTitle);
+        emailContainer.appendChild(emailContent);
+
+        box.appendChild(nameContainer);
+        box.appendChild(emailContainer);
+
+        parent.appendChild(box);
+    }
+
+    function addAllItems(usersList) {
+        usersListContainer.innerHTML = "";
+        usersList.forEach(user => {
+            addItem(user.UserFirstName+" "+user.UserLastName, user.UserEmail, usersListContainer);
+        });
+    }
+
+    async function getAllData() {
+        usersListContainer.innerHTML = '<div class="loading"></div>';
+
+        const querySnapshot = await getDocs(collection(db, "UsersList"));
+
+        var administrators = [];
+
+        querySnapshot.forEach(doc => {
+            administrators.push(doc.data());
+        });
+
+        addAllItems(administrators);
+    }
+
+    window.onload = getAllData;
+
+    let emailbox = document.getElementById("emailbox");
+    let fnamebox = document.getElementById("fnamebox");
+    let lnamebox = document.getElementById("lnamebox");
+
+    document.getElementById("delaccbtn").addEventListener("click", async () => {
+        const docRef = doc(db, "UsersList", emailbox.value);
+        await deleteDoc(docRef)
+        .then(() => {
+            alert("Successfully deleted");
+            window.location.reload();
+        })
+        .catch(error => {
+            alert("Err: "+err);
+        });
+    });
+</script>
 <script src="/JS/admin.min.js" type="module"></script>
 <%- include("partials/footer") %>
